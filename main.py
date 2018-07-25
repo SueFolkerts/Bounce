@@ -1,39 +1,50 @@
+import sys
 import pygame
 from pygame.locals import *
 from Ball import *
-import sys
-
-from Ball import Ball
 
 pygame.init()
-size = (width, height) = (pygame.display.Info().current_w, pygame.display.Info().current_h)
+
+screen_info = pygame.display.Info()
+screen_size = (screen_info.current_w, screen_info.current_h)
+
+size = (width, height) = (850, 480)
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
-color = (0, 0, 0)
-balls = pygame.sprite.Group()
+
+color = (26, 255, 255)
+balls = []
+
+
 def main():
-    global screen
-for i in range(10):
-    balls.add(Ball((width / 2, height / 2)))
-while True:
-    clock.tick(60)
-for event in pygame.event.get():
-    if event.type == QUIT:
-        sys.exit()
-if event.type == MOUSEBUTTONDOWN:
-    balls.add(Ball(event.pos))
-if event.type == KEYDOWN:
-    if event.key == K_d:
-        sprites = balls.sprites()
-        for i in range(len(balls) // 2):
-            sprites[i].kill()
-    elif event.key == K_f:
-        screen = pygame.display.set_mode(size, FULLSCREEN)
-    elif event.key == K_ESCAPE:
-        screen = pygame.display.set_mode(size)
-balls.update()
-screen.fill(color)
-balls.draw(screen)
-pygame.display.flip()
-if __name__ == "__main__":
+    for i in range(10):
+        balls.append(Ball((width / 2, height / 2)))
+    while True:
+        clock.tick(60)
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                sys.exit()
+
+    # NEW FOLLOWS ***************************************************
+            if event.type == MOUSEBUTTONDOWN:
+                balls.append(Ball(event.pos))
+            if event.type == KEYDOWN:
+                if event.key == K_d:
+                    for i in range(len(balls) // 2):
+                        balls.pop(0)
+                if event.key == K_f:
+                    pygame.display.set_mode(screen_size, FULLSCREEN)
+                if event.key == K_ESCAPE:
+                    pygame.display.set_mode(size)
+    # NEW ABOVE *****************************************************
+
+        screen.fill(color)
+        for ball in balls:
+            ball.update()
+        for ball in balls:
+            ball.draw(screen)
+
+        pygame.display.flip()
+
+if __name__ == '__main__':
     main()
